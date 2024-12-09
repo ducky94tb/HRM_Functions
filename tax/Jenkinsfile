@@ -1,21 +1,25 @@
 pipeline {
     agent any
     stages {
-        stage('Build') {
+        stage('Setup Virtual Environment') {
             steps {
-                echo 'Starting Build'
-                sh 'python3 --version'
+                sh '''
+                cd home/duc
+                mkdir test
+                cd test
+                python3 -m venv venv
+                source venv/bin/activate
+                pip install Scrapy
+                '''
             }
         }
-        stage('Test') {
+        stage('Run Python Script') {
             steps {
-                echo 'Starting Test'
-                sh 'python --version'
-            }
-        }
-        stage('Deploy') {
-            steps {
-                echo 'Starting Deploy'
+                sh '''
+                cd home/duc/test
+                source venv/bin/activate
+                Scrapy -V
+                '''
             }
         }
     }
